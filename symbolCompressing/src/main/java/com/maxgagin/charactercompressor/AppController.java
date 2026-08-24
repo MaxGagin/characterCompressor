@@ -1,4 +1,4 @@
-package com.maxgagin.symbolcompressing;
+package com.maxgagin.charactercompressor;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

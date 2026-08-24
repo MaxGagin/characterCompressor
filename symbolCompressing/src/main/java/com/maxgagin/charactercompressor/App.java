@@ -1,4 +1,4 @@
-package com.maxgagin.symbolcompressing;
+package com.maxgagin.charactercompressor;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
