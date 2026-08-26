@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -55,13 +54,10 @@ public class App extends Application {
         
         stage.show();
         
-        area.setText("hello privet");
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                try {core();}
-                catch (Exception ex) {ex.printStackTrace();}
-            }
+//        area.setText("hello privet");
+        button.setOnAction((ActionEvent event) -> {
+            try {core();}
+            catch (Exception ex) {ex.printStackTrace();}
         });
         
     }
@@ -79,7 +75,7 @@ public class App extends Application {
         short i = 0;
         short j = 0;
         short m = 0;
-        short n = 0;
+        short n;
         
         String raw_s = area.getText();
         System.out.println("строка: " + raw_s);
