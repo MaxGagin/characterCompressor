@@ -15,15 +15,15 @@ import javafx.stage.Stage;
 
 public class App extends Application {
     
-    static TextArea area = new TextArea();
-    static TextArea field = new TextArea();
+
     
     @Override
     public void start(Stage stage) throws Exception {
         
 //        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/Fxmltest.fxml")));
 //        Parent root = loader.load();
-        
+        TextArea area = new TextArea();
+        TextArea field = new TextArea();
 
         GridPane pane = new GridPane();
 //        TextArea field = new TextArea();
@@ -56,7 +56,7 @@ public class App extends Application {
         
 //        area.setText("hello privet");
         button.setOnAction((ActionEvent event) -> {
-            try {core();}
+            try {core(area, field);}
             catch (Exception ex) {ex.printStackTrace();}
         });
         
@@ -66,7 +66,7 @@ public class App extends Application {
         launch();
     }
     
-    private static void core() throws Exception {
+    private static void core(TextArea area, TextArea field) throws Exception {
         
         boolean k = false;
         List raw_list = new ArrayList();
