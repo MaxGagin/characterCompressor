@@ -1,5 +1,6 @@
 package com.maxgagin.charactercompressor;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -8,9 +9,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class App extends Application {
@@ -26,14 +30,29 @@ public class App extends Application {
         TextArea field = new TextArea();
 
         GridPane pane = new GridPane();
-//        TextArea field = new TextArea();
         
         Button button = new Button();
         VBox btnBox = new VBox();
         
+        ToggleButton toggle = new ToggleButton();
+        HBox togBox = new HBox();
+        
+        Label label = new Label();
+        label.setText(" -- uncompress characters");
+        label.setAlignment(Pos.CENTER_RIGHT);
+        label.setPadding(new Insets(5, 0, 0, 5));
+        
         btnBox.getChildren().add(button);
         btnBox.setAlignment(Pos.TOP_LEFT);
         btnBox.setPadding(new Insets(10, 10, 0, 10));
+        
+//        togBox.setMinWidth(100);
+        togBox.setMaxHeight(20);
+        togBox.getChildren().add(toggle);
+        togBox.getChildren().add(label);
+        togBox.setAlignment(Pos.TOP_LEFT);
+        togBox.setPadding(new Insets(10, 0, 0, 0));
+        
         
         field.setMaxWidth(250); field.setMaxHeight(200);
         area.setMaxWidth(250); area.setMaxHeight(200);
@@ -41,7 +60,8 @@ public class App extends Application {
         pane.add(field, 0, 0);
         pane.add(btnBox, 260, 0);
         pane.add(area, 280, 0);
-        
+        pane.add(togBox, 0, 280);
+//        pane.add(labelBox, 25, 300);
         
         
         Scene scene = new Scene(pane);
@@ -50,13 +70,13 @@ public class App extends Application {
         
         stage.setTitle("Character compressing!");
         stage.setWidth(600);
-        stage.setHeight(220);
+        stage.setHeight(300);
         
         stage.show();
         
 //        area.setText("hello privet");
         button.setOnAction((ActionEvent event) -> {
-            try {core(area, field);}
+            try {if(toggle.isSelected()) {unCore(area, field);} else{core(area, field);}}
             catch (Exception ex) {ex.printStackTrace();}
         });
         
@@ -77,9 +97,9 @@ public class App extends Application {
         short m = 0;
         short n;
         
-        String raw_s = area.getText();
+        String raw_s = field.getText();
         System.out.println("строка: " + raw_s);
-        byte[] megaraw_list = raw_s.getBytes();
+        byte[] megaraw_list = raw_s.getBytes("UTF-8");
         while (m < megaraw_list.length) {
             raw_list.add(m, megaraw_list[m]);
             
@@ -93,8 +113,8 @@ public class App extends Application {
 
         n = (short)megaraw_list.length;
         System.out.println((byte)raw_list.get(0));
-        raw_list.set(0, (byte)65);
-        System.out.println((byte)raw_list.get(0));
+//        raw_list.set(0, (byte)65);
+//        System.out.println((byte)raw_list.get(0));
         System.out.print("\n");
         System.out.println("hello world!" + n);
         
@@ -120,6 +140,7 @@ public class App extends Application {
             the_list[i] = (short)((byte)raw_list.get(j) + ((byte)raw_list.get(j+1) * 28));
             
             the_list[i] = (short)(the_list[i] + 162);
+            System.out.println(the_list[i]);
             char_list[i] = (char)the_list[i];
             
             System.out.println("FLAG2, j: " + j + " i: " + i);
@@ -142,6 +163,62 @@ public class App extends Application {
             i++;
         }
         
-        field.setText(s);
+        area.setText(s);
+    }
+    
+    private static void unCore(TextArea area, TextArea field) throws Exception {
+        
+        List raw_list = new ArrayList();
+        short[] the_list = new short[32];
+        char[] char_list = new char[32];
+        short i = 0;
+        short j = 0;
+        short m = 0;
+        short n;
+        
+        String raw_s = field.getText();
+        char[] megaraw_list = raw_s.toCharArray();
+        
+        System.out.println("строка: " + raw_s);
+
+        while (m < megaraw_list.length) {
+            
+            System.out.println(megaraw_list[m]);
+            System.out.println(i);
+            System.out.println(m);
+            System.out.println("flag0");
+            raw_list.add(m, (short)megaraw_list[m]);
+            System.out.println("flag1");
+            System.out.println(raw_list.get(m));
+            System.out.println("flag2");
+            raw_list.set(m, (short)raw_list.get(m) - 162);
+            System.out.println("flag3");
+            the_list[i] = (short)((int)raw_list.get(m) / 28);
+            the_list[i+1] = (short)((int)raw_list.get(m) % 28);
+            System.out.println("flag3");
+            System.out.println(the_list[i]);
+            System.out.println(the_list[i+1]);
+            the_list[i] = (short)(the_list[i] + 97);
+            the_list[i+1] = (short)(the_list[i+1] + 97);
+            System.out.println("flag4");
+            char_list[i] = (char)the_list[i+1];
+            char_list[i+1] = (char)the_list[i];
+            System.out.println(i);
+            System.out.println(m);
+            
+            i = (short)(i + 2);
+            m++;
+        }
+        System.out.println("FLAG1");
+        String s = "";
+        i = 0;
+        while(i < (short)the_list.length){
+            s = s + char_list[i];
+            i++;
+        }
+        
+        area.setText(s);
+        System.out.println("FLAG2");
+        
     }
 }
