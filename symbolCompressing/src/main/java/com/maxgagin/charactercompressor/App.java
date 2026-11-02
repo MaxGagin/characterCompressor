@@ -29,6 +29,7 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
         
         HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> pam = new HashMap<>();
         
         InputStream stream = App.class.getClassLoader().getResourceAsStream("config.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
@@ -43,6 +44,7 @@ public class App extends Application {
             w = Integer.parseInt(x[1]);
             System.out.println(v); System.out.println(w);
             map.put(v, w);
+            pam.put(w, v);
         }
         
 //        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/Fxmltest.fxml")));
@@ -96,7 +98,7 @@ public class App extends Application {
         stage.show();
 
         button.setOnAction((ActionEvent event) -> {
-            try {if(toggle.isSelected()) {unCore(area, field);} else{core(area, field, map);}}
+            try {if(toggle.isSelected()) {unCore(area, field, pam);} else{core(area, field, map);}}
             catch (Exception ex) {ex.printStackTrace();}
         });
         
@@ -135,7 +137,7 @@ public class App extends Application {
         System.out.println("n = " + n);
         
         while (j < n){
-            try {raw_list.get(j+1);} catch(Exception ex){raw_list.add(j+1, (byte)0);}
+            try {raw_list.get(j+1);} catch(Exception ex){raw_list.add(j+1, (byte)32);}
             
             
             System.out.println("   " + raw_list.get(j) + "   " + raw_list.get(j+1));
@@ -148,12 +150,16 @@ public class App extends Application {
             if((byte)raw_list.get(j) == 63) {raw_list.set(j, (byte)124);} //? to alphabet
             System.out.println("flag3");
             if((byte)raw_list.get(j+1) == 63) {raw_list.set(j+1, (byte)124);}
+            System.out.println("flag3.5");
+            if((byte)raw_list.get(j) == 46) {raw_list.set(j, (byte)125);} //. to alphabet
+            System.out.println("flag3.7");
+            if((byte)raw_list.get(j+1) == 46) {raw_list.set(j+1, (byte)125);}
             
             System.out.println("FLAG1, j: " + j + " i: " + i);
             
             raw_list.set(j, (byte)((byte)raw_list.get(j) - 96)); raw_list.set(j+1, (byte)((byte)raw_list.get(j+1) - 96));
             
-            the_list[i] = (short)((byte)raw_list.get(j) * 28 + ((byte)raw_list.get(j+1)));
+            the_list[i] = (short)((byte)raw_list.get(j) * 29 + ((byte)raw_list.get(j+1)));
             
             System.out.println(the_list[i]);
             char_list[i] = (char)(int)map.get((int)the_list[i]);
@@ -181,7 +187,7 @@ public class App extends Application {
         area.setText(s);
     }
     
-    private static void unCore(TextArea area, TextArea field) throws Exception {
+    private static void unCore(TextArea area, TextArea field, HashMap<Integer, Integer> pam) throws Exception {
         
         List raw_list = new ArrayList();
         short[] the_list = new short[128];
@@ -203,34 +209,34 @@ public class App extends Application {
             System.out.println(m);
             System.out.println("flag0");
             
-            raw_list.add(m, (short)megaraw_list[m]);
+            raw_list.add(m, (short)(int)pam.get((int)megaraw_list[m]));
             System.out.println("flag1");
             
             System.out.println(raw_list.get(m));
             System.out.println("flag2");
             
-            raw_list.set(m, (short)raw_list.get(m) - 162);
-            System.out.println("flag3");
-            
-            the_list[i] = (short)((int)raw_list.get(m) / 28);
-            the_list[i+1] = (short)((int)raw_list.get(m) % 28);
+            the_list[i] = (short)((short)raw_list.get(m) / (short)29);
+            the_list[i+1] = (short)((short)raw_list.get(m) % (short)29);
             
             System.out.println("flag4");
             System.out.println(the_list[i]);
             System.out.println(the_list[i+1]);
             
-            the_list[i] = (short)(the_list[i] + 97);
-            the_list[i+1] = (short)(the_list[i+1] + 97);
+            the_list[i] = (short)(the_list[i] + 96);
+            the_list[i+1] = (short)(the_list[i+1] + 96);
             
-            if((int)the_list[i] == 125) {the_list[i] = 63;} //? from alphabet
-            if((int)the_list[i+1] == 125) {the_list[i+1] = 63;}            
+            if((int)the_list[i] == 124) {the_list[i] = 63;} //? from alphabet
+            if((int)the_list[i+1] == 124) {the_list[i+1] = 63;}            
             
-            if((int)the_list[i] == 124) {the_list[i] = 32;} //space fron alphabet
-            if((int)the_list[i+1] == 124) {the_list[i+1] = 32;}
+            if((int)the_list[i] == 123) {the_list[i] = 32;} //space from alphabet
+            if((int)the_list[i+1] == 123) {the_list[i+1] = 32;}
+            
+            if((int)the_list[i] == 125) {the_list[i] = 46;} //space from alphabet
+            if((int)the_list[i+1] == 125) {the_list[i+1] = 46;}
             
             System.out.println("flag5");
-            char_list[i] = (char)the_list[i+1];
-            char_list[i+1] = (char)the_list[i];
+            char_list[i+1] = (char)the_list[i+1];
+            char_list[i] = (char)the_list[i];
             
             System.out.println(i);
             System.out.println(m);
