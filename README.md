@@ -9,3 +9,5 @@ Written on Java with JavaFX and Maven.
 
 The last version: 0.1
 
+Should work on windows 10.
+Please, run this using the bat file if you are using windows 11.
